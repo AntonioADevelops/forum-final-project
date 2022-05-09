@@ -5,3 +5,7 @@
 #content {
      margin-left: 20px;
 }
+
+#form {
+     visibility: hidden;
+}
