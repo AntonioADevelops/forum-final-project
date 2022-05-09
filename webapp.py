@@ -2,6 +2,7 @@ from flask import Flask, redirect, url_for, session, request, flash, jsonify
 from flask_oauthlib.client import OAuth
 #from flask_oauthlib.contrib.apps import github #import to make requests to GitHub's OAuth
 from flask import render_template
+from flask import Markup
 
 import pprint
 import os
@@ -53,7 +54,8 @@ def login():
 @app.route('/logout')
 def logout():
     session.clear()
-    flash('You were logged out')
+    S_Logout = Markup('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Success!<strong> You were successfully logged out</div>')
+    flash(S_Logout)
     return render_template('home.html')
 
 @app.route('/login/authorized')
@@ -68,11 +70,13 @@ def authorized():
             session['user_data']=github.get('user').data
             #pprint.pprint(vars(github['/email']))
             #pprint.pprint(vars(github['api/2/accounts/profile/']))
-            flash('You were successfully logged in as ' + session['user_data']['login'] + '.')
+            S_Login = Markup('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Success!<strong> You were successfully logged in as ' + session['user_data']['login'] + '.</div>')
+            flash(S_Login)
         except Exception as inst:
             session.clear()
             print(inst)
-            flash('Unable to login, please try again.')
+            F_Login = Markup('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Fail!</strong> Unable to login, please try again.</div>')
+            flash(F_Login)
     return render_template('home.html')
 
 
