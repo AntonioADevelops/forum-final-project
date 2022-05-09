@@ -54,7 +54,7 @@ def login():
 @app.route('/logout')
 def logout():
     session.clear()
-    S_Logout = Markup('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Success!<strong> You were successfully logged out</div>')
+    S_Logout = Markup('<div class="alert alert-info"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Success!<strong> You were successfully logged out</div>')
     flash(S_Logout)
     return render_template('home.html')
 
@@ -63,7 +63,8 @@ def authorized():
     resp = github.authorized_response()
     if resp is None:
         session.clear()
-        flash('Access denied: reason=' + request.args['error'] + ' error=' + request.args['error_description'] + ' full=' + pprint.pformat(request.args))     
+        B_Login = Markup('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Fail!</strong> Access denied: reason=' + request.args['error'] + ' error=' + request.args['error_description'] + ' full=' + pprint.pformat(request.args) + '</div>')
+        flash(B_Login)     
     else:
         try:
             session['github_token'] = (resp['access_token'], '') #save the token to prove that the user logged in
