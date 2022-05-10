@@ -54,7 +54,7 @@ def login():
 @app.route('/logout')
 def logout():
     session.clear()
-    S_Logout = Markup('<div class="alert alert-info"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Success!<strong> You were successfully logged out</div>')
+    S_Logout = Markup('<div class="alert alert-info"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Success!</strong> You were successfully logged out</div>')
     flash(S_Logout)
     return render_template('home.html')
 
@@ -71,7 +71,7 @@ def authorized():
             session['user_data']=github.get('user').data
             #pprint.pprint(vars(github['/email']))
             #pprint.pprint(vars(github['api/2/accounts/profile/']))
-            S_Login = Markup('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Success!<strong> You were successfully logged in as ' + session['user_data']['login'] + '.</div>')
+            S_Login = Markup('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Success!</strong> You were successfully logged in as ' + session['user_data']['login'] + '.</div>')
             flash(S_Login)
         except Exception as inst:
             session.clear()
@@ -79,19 +79,6 @@ def authorized():
             F_Login = Markup('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Fail!</strong> Unable to login, please try again.</div>')
             flash(F_Login)
     return render_template('home.html')
-
-
-@app.route('/page1')
-def renderPage1():
-    if 'user_data' in session:
-        user_data_pprint = pprint.pformat(session['user_data'])#format the user data nicely
-    else:
-        user_data_pprint = '';
-    return render_template('page1.html',dump_user_data=user_data_pprint)
-
-@app.route('/page2')
-def renderPage2():
-    return render_template('page2.html')
 
 #the tokengetter is automatically called to check who is logged in.
 @github.tokengetter

@@ -1,11 +1,61 @@
-/* body {
-
-} */
-
 #content {
+     margin-top: 20px;
      margin-left: 20px;
+     margin-right: 20px;
+     text-align: center;
 }
 
-#form {
-     visibility: hidden;
+#cpost {
+     border: 2px solid #ccc;
+     border-radius: 4px;
+     background-color: #f8f8f8;
+}
+
+.navbar {
+     border-radius: 2px;
+     border-bottom: 2px solid #ccc;
+}
+
+#form > input {
+     border: 2px solid #ccc;
+     border-radius: 4px;
+     background-color: #f8f8f8;
+}
+
+#upost {
+     width: 50%;
+     height: 125px;
+}
+
+#uposttitle {
+     width: 50%;
+     height: 40px;
+}
+
+#userid {
+     color: rgb(78, 78, 78);
+     cursor: default;
+     padding-right:30px;
+}
+
+.navbar-brand {
+     color: rgb(78, 78, 78);
+}
+
+.navbar-brand:hover{
+     color: black;
+     text-decoration: none;
+}
+
+.loginbut {
+     color: rgb(78, 78, 78);
+}
+
+.loginbut:hover {
+     color: black;
+     text-decoration: none;
+}
+
+#submitbut {
+     margin-top: 5px
 }
