@@ -3,6 +3,7 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
+<!--
 <script>
   {% if logged_in %}
   $(document).ready(function(){
@@ -23,10 +24,11 @@
 
   {% endif %}
 </script>
+-->
 <h1>Create a Post</h1>
 <button id="cpost">Create Post</button>
 
-<form action="/" method="POST" id='form'>
+<form method="POST" action="/posts" id='form'>
   <label for='title'>Title:</label>
   <br>
   <input id='uposttitle' type="text" name="title">
