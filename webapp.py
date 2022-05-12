@@ -47,6 +47,10 @@ def inject_logged_in():
 def home():
     return render_template('home.html')
 
+@app.route('/posts')
+def posts():
+    return render_template('posts.html')
+
 #redirect to GitHub's OAuth page and confirm callback URL
 @app.route('/login')
 def login():   
@@ -87,12 +91,17 @@ def get_github_oauth_token():
     return session['github_token']
 
 # Store Posts using MongoDB
-connection_string = os.environ["MONGO_CONNECTION_STRING"]
-db_name = os.environ["MONGO_DBNAME"]
+def store_data():
+    connection_string = os.environ["MONGO_CONNECTION_STRING"]
+    db_name = os.environ["MONGO_DBNAME"]
 
-client = pymongo.MongoClient(connection_string)
-db = client[db_name]
-collection = db['posts'] #1. put the name of your collection in the quotes
+    client = pymongo.MongoClient(connection_string)
+    db = client[db_name]
+    collection = db['messages'] #1. put the name of your collection in the quotes
+    
+    u_title = request.form['title']
+    u_post = request.form['post']
+    collection.insert_one(u_post + u_title)
 
 if __name__ == '__main__':
     app.run(debug=True)
