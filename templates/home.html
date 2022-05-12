@@ -3,7 +3,7 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<!--
+<!-- Check For Login Status Before Post-->
 <script>
   {% if logged_in %}
   $(document).ready(function(){
@@ -24,7 +24,7 @@
 
   {% endif %}
 </script>
--->
+
 <h1>Create a Post</h1>
 <button id="cpost">Create Post</button>
 

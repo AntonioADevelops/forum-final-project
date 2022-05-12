@@ -4,6 +4,7 @@ from flask_oauthlib.client import OAuth
 from flask import render_template
 from flask import Markup
 
+import pymongo
 import pprint
 import os
 
@@ -85,6 +86,13 @@ def authorized():
 def get_github_oauth_token():
     return session['github_token']
 
+# Store Posts using MongoDB
+connection_string = os.environ["MONGO_CONNECTION_STRING"]
+db_name = os.environ["MONGO_DBNAME"]
+
+client = pymongo.MongoClient(connection_string)
+db = client[db_name]
+collection = db['posts'] #1. put the name of your collection in the quotes
 
 if __name__ == '__main__':
     app.run(debug=True)
