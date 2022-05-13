@@ -5,3 +5,6 @@ Werkzeug>=0.14
 wheel
 gunicorn
 Flask-OAuthlib
+Flask-PyMongo
+pymongo
+dnspython

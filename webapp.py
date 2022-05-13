@@ -71,7 +71,7 @@ def login():
 @app.route('/logout')
 def logout():
     session.clear()
-    S_Logout = Markup('<div class="alert alert-info"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Success!</strong> You were successfully logged out</div>')
+    S_Logout = Markup('<div class="alert alert-info"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Success!</strong> You were logged out</div>')
     flash(S_Logout)
     return render_template('home.html')
 
@@ -88,7 +88,7 @@ def authorized():
             session['user_data']=github.get('user').data
             #pprint.pprint(vars(github['/email']))
             #pprint.pprint(vars(github['api/2/accounts/profile/']))
-            S_Login = Markup('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Success!</strong> You were successfully logged in as ' + session['user_data']['login'] + '.</div>')
+            S_Login = Markup('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Success!</strong> You were logged in as ' + session['user_data']['login'] + '.</div>')
             flash(S_Login)
         except Exception as inst:
             session.clear()
