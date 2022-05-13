@@ -5,9 +5,9 @@ from flask import render_template
 from flask import Markup
 
 # from zoneinfo import ZoneInfo
-# import datetime
+# import datetime #refer to https://stackoverflow.com/questions/40358675/flask-get-local-time
 import pymongo
-import gridfs   
+import gridfs #used for retrieving document data  
 import pprint
 import os
 
