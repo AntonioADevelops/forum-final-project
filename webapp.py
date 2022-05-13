@@ -4,7 +4,10 @@ from flask_oauthlib.client import OAuth
 from flask import render_template
 from flask import Markup
 
+# from zoneinfo import ZoneInfo
+# import datetime
 import pymongo
+import gridfs   
 import pprint
 import os
 
@@ -35,6 +38,13 @@ github = oauth.remote_app(
     authorize_url='https://github.com/login/oauth/authorize' #URL for github's OAuth login
 )
 
+connection_string = os.environ["MONGO_CONNECTION_STRING"]
+db_name = os.environ["MONGO_DBNAME"]
+
+client = pymongo.MongoClient(connection_string)
+db = client[db_name]
+collection = db['messages'] #1. put the name of your collection in the quotes
+
 #context processors run before templates are rendered and add variable(s) to the template's context
 #context processors must return a dictionary 
 #this context processor adds the variable logged_in to the conext for all templates
@@ -48,22 +58,17 @@ def home():
 
 @app.route('/posts', methods=['GET', 'POST'])
 def posts():
-    return render_template('posts.html')
-
-# Store Posts using MongoDB
-def store_data():
-    connection_string = os.environ["MONGO_CONNECTION_STRING"]
-    db_name = os.environ["MONGO_DBNAME"]
-
-    client = pymongo.MongoClient(connection_string)
-    db = client[db_name]
-    collection = db['messages'] #1. put the name of your collection in the quotes
-    
     u_post = {'username': session['user_data']['login'],
               'post_title': request.form['title'],
+            #   'post_time': datetime.datetime.utcnow(),
               'post_content': request.form['post']}
     
-    collection.insert_one(u_post).inserted_ids
+    collection.insert_one(u_post)
+    
+    
+    
+    return render_template('posts.html')
+    
 
 #redirect to GitHub's OAuth page and confirm callback URL
 @app.route('/login')
