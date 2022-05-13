@@ -5,7 +5,7 @@
   <ul class="navbar-nav ml-auto">
     {% if logged_in %}
     <li>
-      <a id='userid'>{{ session['user_data']['name']}}</a>
+      <a id='userid'>{{ session['user_data']['login']}}</a>
     </li>
     {% endif %}
     <li>
