@@ -59,8 +59,10 @@ def store_data():
     db = client[db_name]
     collection = db['messages'] #1. put the name of your collection in the quotes
     
-    u_title = request.form['title']
-    u_post = request.form['post']
+    u_post = {'username': session['user_data']['login'],
+              'post_title': request.form['title'],
+              'post_content': request.form['post']}
+    
     collection.insert_one(u_post).inserted_ids
 
 #redirect to GitHub's OAuth page and confirm callback URL
