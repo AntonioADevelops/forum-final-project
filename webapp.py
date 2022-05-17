@@ -62,10 +62,13 @@ def posts():
               'post_title': request.form['title'],
             #   'post_time': datetime.datetime.utcnow(),
               'post_content': request.form['post']}
+
     
     collection.insert_one(u_post)
     
-    
+#post = post+post
+    for post in posts.collection():
+        pprint.pprint(post)
     
     return render_template('posts.html')
     
