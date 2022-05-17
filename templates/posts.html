@@ -3,13 +3,17 @@
 {% block title %}Posts{% endblock %}
 
 {% block content %}
-<div class="posts">
-  <p>{{user_name}}'s post</p>
-  <p>{{date}}</p>
+<form method="POST" action="/" id='form'>
+  <label for='title'>Title:</label>
   <br>
-  <h4>{{user_title}}</h4>
-  <p>{{user_post}}</p>
-  <p>{{all_posts}}</p>
-</div>
+  <input id='uposttitle' type="text" name="title">
+  <br>
+  <label for='post'>Post:</label>
+  <br>
+  <input id='upost' type="text" name="post">
+  <br>
+  <input type="submit" value="Submit" id='submitbut'>
+</form>
+
 
 {% endblock %}

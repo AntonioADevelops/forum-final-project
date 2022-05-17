@@ -7,20 +7,17 @@
 <script>
   {% if logged_in %}
   $(document).ready(function(){
-    $('#form').hide()
-      $('#cpost').click(function(){
-          $('#cpost').hide();
-          $('#form').show();
-      });
+    $('#cpost').click(function(){
+      $.get(posts.html)
     });
+  });
 
   {% elif not logged_in %}
   $(document).ready(function(){
-    $('#form').hide()
-      $('#cpost').click(function(){
-        alert('Before you can make a post, please log in.')
-      });
+    $('#cpost').click(function(){
+      alert('Before you can make a post, please log in.')
     });
+  });
 
   {% endif %}
 </script>
@@ -28,17 +25,11 @@
 <h1>Create a Post</h1>
 <button id="cpost">Create Post</button>
 
-<form method="POST" action="/posts" id='form'>
-  <label for='title'>Title:</label>
-  <br>
-  <input id='uposttitle' type="text" name="title">
-  <br>
-  <label for='post'>Post:</label>
-  <br>
-  <input id='upost' type="text" name="post">
-  <br>
-  <input type="submit" value="Submit" id='submitbut'>
-</form>
+<div class="posts">
+  {{user_posts}}
+</div>
+
+
 
 
 {% endblock %}

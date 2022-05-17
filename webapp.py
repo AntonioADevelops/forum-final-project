@@ -6,8 +6,8 @@ from flask import Markup
 
 # from zoneinfo import ZoneInfo
 # import datetime #refer to https://stackoverflow.com/questions/40358675/flask-get-local-time
+# import gridfs used for retrieving document data 
 import pymongo
-import gridfs #used for retrieving document data  
 import pprint
 import os
 
@@ -48,29 +48,33 @@ collection = db['messages'] #1. put the name of your collection in the quotes
 #context processors run before templates are rendered and add variable(s) to the template's context
 #context processors must return a dictionary 
 #this context processor adds the variable logged_in to the conext for all templates
+def get_posts():
+
 @app.context_processor
 def inject_logged_in():
     return {"logged_in":('github_token' in session)}
 
 @app.route('/')
 def home():
-    return render_template('home.html')
-
-@app.route('/posts', methods=['GET', 'POST'])
-def posts():
     u_post = {'username': session['user_data']['login'],
               'post_title': request.form['title'],
-            #   'post_time': datetime.datetime.utcnow(),
+              #'post_time': datetime.datetime.utcnow(),
               'post_content': request.form['post']}
-
+    posts = collection.find({})
+    for post in posts:
+        formatted_posts = Markup("<h1>" + post["username"] + "</h1><h1>" + post["post_title"] + "</h1><p>" + post["post_content"] + "</p>")
     
     collection.insert_one(u_post)
+    return render_template('home.html', user_posts = formatted_posts)
+#call this function whenever you need to display the posts on a page.
+
     
-#post = post+post
-    for post in posts.collection():
-        pprint.pprint(post)
+@app.route('/posts', methods=['GET', 'POST'])
+def posts():
+    return render_template(posts.html)
+
     
-    return render_template('posts.html')
+
     
 
 #redirect to GitHub's OAuth page and confirm callback URL
