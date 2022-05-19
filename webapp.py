@@ -48,34 +48,39 @@ collection = db['messages'] #1. put the name of your collection in the quotes
 #context processors run before templates are rendered and add variable(s) to the template's context
 #context processors must return a dictionary 
 #this context processor adds the variable logged_in to the conext for all templates
-#def get_posts():
 
+#call this function whenever you need to display the posts on a page.
+def get_posts():
+    posts = collection.find({})
+    formatted_posts=""
+    for post in posts:
+        formatted_posts = formatted_posts + Markup("<div class=\"row\"><div class=\"col-sm-8\"><div class=\"posts\"><p>" + post["username"] + "</p><p>" + post["post_title"] + "</p><p>" + post["post_content"] + "</p></div></div></div>")   
+    return formatted_posts     
+
+def add_posts():
+    u_post = {'username': session['user_data']['login'],
+               'post_title': request.form['title'],
+               #'post_time': datetime.datetime.utcnow(),
+               'post_content': request.form['post']}
+
+    collection.insert_one(u_post)
+    
 @app.context_processor
 def inject_logged_in():
     return {"logged_in":('github_token' in session)}
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
-    u_post = {'username': session['user_data']['login'],
-              'post_title': request.form['title'],
-              #'post_time': datetime.datetime.utcnow(),
-              'post_content': request.form['post']}
-    posts = collection.find({})
-    for post in posts:
-        formatted_posts = Markup("<h1>" + post["username"] + "</h1><h1>" + post["post_title"] + "</h1><p>" + post["post_content"] + "</p>")
-    
-    collection.insert_one(u_post)
-    return render_template('home.html', user_posts = formatted_posts)
-#call this function whenever you need to display the posts on a page.
+    if "title" in request.form:
+        add_posts()
+        
+    return render_template('home.html', user_posts = get_posts())
+
 
     
 @app.route('/posts', methods=['GET', 'POST'])
 def posts():
-    return render_template(posts.html)
-
-    
-
-    
+    return render_template('posts.html')
 
 #redirect to GitHub's OAuth page and confirm callback URL
 @app.route('/login')
@@ -87,7 +92,7 @@ def logout():
     session.clear()
     S_Logout = Markup('<div class="alert alert-info"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Success!</strong> You were logged out</div>')
     flash(S_Logout)
-    return render_template('home.html')
+    return render_template('home.html', user_posts = get_posts())
 
 @app.route('/login/authorized')
 def authorized():
@@ -109,7 +114,7 @@ def authorized():
             print(inst)
             F_Login = Markup('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Fail!</strong> Unable to login, please try again.</div>')
             flash(F_Login)
-    return render_template('home.html')
+    return render_template('home.html', user_posts = get_posts())
 
 #the tokengetter is automatically called to check who is logged in.
 @github.tokengetter
