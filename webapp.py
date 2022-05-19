@@ -54,7 +54,7 @@ def get_posts():
     posts = collection.find({})
     formatted_posts=""
     for post in posts:
-        formatted_posts = formatted_posts + Markup("<div class=\"row\"><div class=\"col-sm-8\"><div class=\"posts\"><p>" + post["username"] + "</p><p>" + post["post_title"] + "</p><p>" + post["post_content"] + "</p></div></div></div>")   
+        formatted_posts = formatted_posts + Markup("<div class=\"row\"><div class=\"col-sm-8\"><div class=\"posts\"><div class=\"u_icon\"><img src=\"{% url_for('static', filename='u-icon_placeholder.png') %}\"></div><p>" + post["username"] + "</p><p>" + post["post_title"] + "</p><p>" + post["post_content"] + "</p></div></div></div>")   
     return formatted_posts     
 
 def add_posts():
