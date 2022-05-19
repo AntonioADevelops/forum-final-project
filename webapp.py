@@ -48,7 +48,7 @@ collection = db['messages'] #1. put the name of your collection in the quotes
 #context processors run before templates are rendered and add variable(s) to the template's context
 #context processors must return a dictionary 
 #this context processor adds the variable logged_in to the conext for all templates
-def get_posts():
+#def get_posts():
 
 @app.context_processor
 def inject_logged_in():
