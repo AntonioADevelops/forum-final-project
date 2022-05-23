@@ -1,14 +1,26 @@
 <!-- A grey horizontal navbar that becomes vertical on small screens -->
 <nav class="navbar navbar-expand-sm bg-light">
-  <a class="navbar-brand" href="#">Home</a>
+  <a class="navbar-brand" href="/">Home</a>
   <!-- Links -->
   <ul class="navbar-nav ml-auto">
+    <!-- Check for login tatus before granting post ability-->
     {% if logged_in %}
-    <li>
-      <a id='userid'>{{ session['user_data']['login']}}</a>
+    <li class="cpost-div">
+      <a href="/posts" type="button" id="cpost">Create Post</a>
+    </li>
+    {% elif not logged_in %}
+    <li class="cpost-div">
+      <a type="button" id="cpost">Create Post</a>
     </li>
     {% endif %}
-    <li>
+    
+    <!-- Sets username in navbar-->
+    {% if logged_in %}
+    <li class="userid-div">
+      <a id='userid'>{{session['user_data']['login']}}</a>
+    </li>
+    {% endif %}
+    <li class="loginbut-div">
     {% if logged_in %}
       <a href="/logout" class='loginbut'>Logout</a>
     {% else %}

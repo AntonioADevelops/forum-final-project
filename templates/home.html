@@ -3,29 +3,7 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<!--
-<div class="row">
-  <div class="col-sm-8">.col-sm-8</div>
-  <div class="col-sm-4">.col-sm-4</div>
--->
 
-<!-- Check For Login Status Before Post-->
-<h1>Create a Post</h1>
-{% if logged_in %}
-<a href="/posts" type="button" id="cpost">Create Post</a>
-
-{% elif not logged_in %}
-<script>
-  $(document).ready(function(){
-    $('#cpost').click(function(){
-      alert('Before you can make a post, please log in.')
-    });
-  });
-</script>
-<button id="cpost">Create Post</button>
-{% endif %}
-<div>
-  {{user_posts}}
-</div>
+{{user_posts}}
 
 {% endblock %}

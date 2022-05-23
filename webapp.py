@@ -54,7 +54,7 @@ def get_posts():
     posts = collection.find({})
     formatted_posts=""
     for post in posts:
-        formatted_posts = formatted_posts + Markup("<div class=\"row\"><div class=\"col-sm-8\"><div class=\"posts\"><div class=\"u_icon\"><img src=\"{% url_for('static', filename='u-icon_placeholder.png') %}\"></div><p>" + post["username"] + "</p><p>" + post["post_title"] + "</p><p>" + post["post_content"] + "</p></div></div></div>")   
+        formatted_posts = formatted_posts + Markup("<div class=\"row\"><div class=\"col-sm-8\"><div class=\"posts\"><div class=\"u-icons-div\"><img class=\"u-icons\" src=\"/static/u-icon_placeholder.png\"></div><div class=\"u_name\"><p>" + post["username"] + "</p></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><div class=\"u-post\"><p>" + post["post_content"] + "</p><a class=\"reply\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p>reply</p></a></div></div></div></div>")   
     return formatted_posts     
 
 def add_posts():
@@ -64,6 +64,12 @@ def add_posts():
                'post_content': request.form['post']}
 
     collection.insert_one(u_post)
+    
+# def admin():
+#     admin = False
+#     if session['user_data']['login'] == "AntonioADevelops" or "sanchez-christian":
+#         admin = True
+#     if admin == True:    
     
 @app.context_processor
 def inject_logged_in():
@@ -75,12 +81,13 @@ def home():
         add_posts()
         
     return render_template('home.html', user_posts = get_posts())
-
-
     
 @app.route('/posts', methods=['GET', 'POST'])
 def posts():
-    return render_template('posts.html')
+    if ('github_token' in session):
+        return render_template('posts.html')
+    else:
+        return redirect("/")
 
 #redirect to GitHub's OAuth page and confirm callback URL
 @app.route('/login')
@@ -122,4 +129,4 @@ def get_github_oauth_token():
     return session['github_token']
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
