@@ -16,6 +16,8 @@ import os
 # environment variables, so that this will work on Heroku.
 # Edited by S. Adams for Designing Software for the Web to add comments and remove flash messaging
 
+from bson.objectid import ObjectId
+
 app = Flask(__name__)
 
 app.debug = False #Change this to False for production
@@ -54,7 +56,7 @@ def get_posts():
     posts = collection.find({})
     formatted_posts=""
     for post in posts:
-        formatted_posts = formatted_posts + Markup("<div class=\"row\"><div class=\"col-sm-8\"><div class=\"posts\"><div class=\"u-icons-div\"><img class=\"u-icons\" src=\"/static/u-icon_placeholder.png\"></div><div class=\"u_name\"><p>" + post["username"] + "</p></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><div class=\"u-post\"><p>" + post["post_content"] + "</p><a class=\"reply\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></a></div></div></div></div>")   
+        formatted_posts = formatted_posts + Markup("<div class=\"row\"><div class=\"col-sm-8\"><div class=\"posts\"><div class=\"u-icons-div\"><img class=\"u-icons\" src=\"/static/u-icon_placeholder.png\"></div><div class=\"u_name\"><p>" + post["username"] + "</p></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><form action=\"/\" method=\"POST\"><button type=\"submit\" name=\"delete\" value=" + post["_id"] + ">Delete</button></form><div class=\"u-post\"><p>" + post["post_content"] + "</p><a class=\"reply\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></a><form action=\"/\" method=\"post\"><input type=\"text\" class=\"reply-field\"></form></div></div></div></div>")   
     return formatted_posts     
 
 def add_posts():
@@ -65,11 +67,11 @@ def add_posts():
 
     collection.insert_one(u_post)
     
-# def admin():
-#     admin = False
-#     if session['user_data']['login'] == "AntonioADevelops" or "sanchez-christian":
-#         admin = True
-#     if admin == True:    
+def admin():
+    admin = False
+    if session['user_data']['login'] == "AntonioADevelops" or "sanchez-christian":
+        admin = True
+    return admin  
     
 @app.context_processor
 def inject_logged_in():
@@ -79,7 +81,10 @@ def inject_logged_in():
 def home():
     if "title" in request.form:
         add_posts()
-        
+
+    # if admin() == True and request.method == 'POST':
+    #     collection.delete_one({"_id": "ObjectId"})
+    
     return render_template('home.html', user_posts = get_posts())
     
 @app.route('/posts', methods=['GET', 'POST'])
@@ -129,4 +134,4 @@ def get_github_oauth_token():
     return session['github_token']
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
