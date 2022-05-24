@@ -56,7 +56,7 @@ def get_posts():
     posts = collection.find({})
     formatted_posts=""
     for post in posts:
-        formatted_posts = formatted_posts + Markup("<div class=\"row\"><div class=\"col-sm-8\"><div class=\"posts\"><div class=\"u-icons-div\"><img class=\"u-icons\" src=\"/static/u-icon_placeholder.png\"></div><div class=\"u_name\"><p>" + post["username"] + "</p></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><form action=\"/\" method=\"POST\"><button type=\"submit\" name=\"delete\" value=" + post["_id"] + ">Delete</button></form><div class=\"u-post\"><p>" + post["post_content"] + "</p><a class=\"reply\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></a><form action=\"/\" method=\"post\"><input type=\"text\" class=\"reply-field\"></form></div></div></div></div>")   
+        formatted_posts = formatted_posts + Markup("<div class=\"row\"><div class=\"col-sm-8\"><div class=\"posts\"><div class=\"u-icons-div\"><img class=\"u-icons\" src=\"/static/u-icon_placeholder.png\"></div><div class=\"u_name\"><p>" + post["username"] + "</p></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><form action=\"/\" method=\"POST\"><button type=\"submit\" name=\"delete\" value=" + post['_id'] + ">Delete</button></form><div class=\"u-post\"><p>" + post["post_content"] + "</p><a class=\"reply\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></a><form action=\"/\" method=\"post\"><input type=\"text\" class=\"reply-field\"></form></div></div></div></div>")   
     return formatted_posts     
 
 def add_posts():
