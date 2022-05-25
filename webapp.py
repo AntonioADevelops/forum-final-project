@@ -43,7 +43,8 @@ db_name = os.environ["MONGO_DBNAME"]
 
 client = pymongo.MongoClient(connection_string)
 db = client[db_name]
-collection = db['messages'] #1. put the name of your collection in the quotes
+messages = db['messages']
+replies = db['replies']
 
 #context processors run before templates are rendered and add variable(s) to the template's context
 #context processors must return a dictionary 
@@ -51,12 +52,20 @@ collection = db['messages'] #1. put the name of your collection in the quotes
 
 #call this function whenever you need to display the posts on a page.
 def get_posts():
-    posts = collection.find({})
+    posts = messages.find({})
     formatted_posts=""
     for post in posts:
         ObjID = str(post['_id'])
-        formatted_posts = formatted_posts + Markup("<div class=\"row\"><div class=\"col-sm-8\"><div class=\"posts\"><div class=\"u-icons-div\"><img class=\"u-icons\" src=\"/static/u-icon_placeholder.png\"></div><div class=\"u_name\"><p>" + post["username"] + "</p></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><form action=\"/delete\" method=\"POST\"><button type=\"submit\" name=\"delete\" value=\"" + ObjID + "\"></button></form><div class=\"u-post\"><p>" + post["post_content"] + "</p><a class=\"reply\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></a><form action=\"/reply\" method=\"post\"><input type=\"text\" class=\"reply-field\"></form></div></div></div></div>")   
-    return formatted_posts     
+        formatted_posts = formatted_posts + Markup("<div class=\"row\"><div class=\"col-sm-8\"><div class=\"posts\"><div class=\"u-icons-div\"><img class=\"u-icons\" src=\"/static/u-icon_placeholder.png\"></div><div class=\"u_name\"><p>" + post["username"] + "</p></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><form action=\"/delete\" method=\"POST\"><button type=\"submit\" name=\"delete\" value=\"" + ObjID + "\">Delete</button></form><div class=\"u-post\"><p>" + post["post_content"] + "</p><a class=\"reply\" href=\"/thread\" name=\"reply\" value=\"" + ObjID + "\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></a></div></div></div></div>")   
+    return formatted_posts
+
+def get_replies():
+    replies = replies.find({})
+    formatted_replies=""
+    for reply in replies:
+        ObjID = str(reply['id'])
+        formatted_replies = formatted_replies + Markup("<div>")
+    return formatted_replies
 
 def add_posts():
     u_post = {'username': session['user_data']['login'],
@@ -64,8 +73,11 @@ def add_posts():
                #'post_time': datetime.datetime.utcnow(),
                'post_content': request.form['post']}
 
-    collection.insert_one(u_post)
+    replies.insert_one(u_post)
     
+def add_replies():
+    u_replies = {'username': session['user_data']['login'],
+                 'reply': request.form['reply']}
 def admin():
     admin = False
     if session['user_data']['login'] == "AntonioADevelops" or "sanchez-christian":
@@ -131,6 +143,41 @@ def authorized():
 @github.tokengetter
 def get_github_oauth_token():
     return session['github_token']
+
+@app.route('/thread', methods=['GET', 'POST'])
+def thread():
+    posts = messages.find({})
+    postID = ObjectId(request.form['reply'])
+    threaded_post = ""
+    for post in posts:
+        if post['_id'] == postID:
+            ObjID = str(post['_id'])
+            threaded_post = threaded_post + Markup("<div class=\"row\"><div class=\"col-sm-8\"><div class=\"tposts\"><div class=\"tu-icons-div\"><img class=\"tu-icons\" src=\"/static/u-icon_placeholder.png\"></div><div class=\"tu_name\"><p>" + post["username"] + "</p></div><div class=\"tu-title\"><p>" + post["post_title"] + "</p></div><form action=\"/delete\" method=\"POST\"><button type=\"submit\" name=\"delete\" \"value=\"" + ObjID + ">Delete</button></form><div class=\"tu-post\"><p>" + post["post_content"] + "</p><a class=\"treply\" href=\"/thread\" name=\"reply\" value=\"" + ObjID + "\"><img class=\"treply-icon\" src=\"/static/reply.svg\"><p class=\"treply-text\">reply</p></a></div></div></div></div>")         
+            return render_template('thread.html', post_thread = thread)
+
+
+@app.route('/delete', methods=['GET', 'POST'])
+def delete_button():
+    if request.method == 'POST':
+        
+        S_Delete = Markup('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Success!</strong> Your post has been successfully deleted. </div>')
+        F_Delete = Markup('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Fail!</strong> Unable to delete posts. Cannot delete other users\' posts. </div>')
+        posts = messages.find({})
+        postID = ObjectId(request.form['delete'])
+        for post in posts: #scans through all documents in the database
+            if post['username'] == session['user_data']['login']:
+                if post['_id'] == postID:
+                    messages.delete_one(({'_id': postID}))
+                    flash(S_Delete)
+                    return render_template('home.html', user_posts = get_posts())
+            else:
+                flash(F_Delete)
+                return render_template('home.html', user_posts = get_posts())
+                
+    elif request.method == 'GET':
+        return redirect(url_for('/home.html'))
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

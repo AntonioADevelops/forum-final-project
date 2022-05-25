@@ -102,6 +102,25 @@
      text-align: center;
 }
 
+/* Style Threaded Posts */
+.tposts {
+     border: 2px solid black;
+     border-radius: 5px;
+}
+
+.tu-icons {
+     border-radius: 50%;
+     border: 1px solid rgb(88, 88, 88);
+     min-width: 40px;
+     max-width: 3vw;
+     height: auto;
+}
+
+/* .tu-name {
+}
+
+.tu-title {
+} */
 /* Style Reply Button */
 .reply {
      display: inline-block;
@@ -123,7 +142,4 @@
 
 .reply-text {
      display: inline-block;
-}
-
-.reply-field {
 }
