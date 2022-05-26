@@ -1,3 +1,4 @@
+from ast import If
 from flask import Flask, redirect, url_for, session, request, flash, jsonify
 from flask_oauthlib.client import OAuth
 #from flask_oauthlib.contrib.apps import github #import to make requests to GitHub's OAuth
@@ -56,7 +57,8 @@ def get_posts():
     formatted_posts=""
     for post in posts:
         ObjID = str(post['_id'])
-        formatted_posts = formatted_posts + Markup("<div class=\"row\"><div class=\"col-sm-8\"><div class=\"posts\"><div class=\"u-icons-div\"><img class=\"u-icons\" src=\"/static/u-icon_placeholder.png\"></div><div class=\"u_name\"><p>" + post["username"] + "</p></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><form action=\"/delete\" method=\"POST\"><button type=\"submit\" name=\"delete\" value=\"" + ObjID + "\">Delete</button></form><div class=\"u-post\"><p>" + post["post_content"] + "</p><a class=\"reply\" href=\"/thread\" name=\"reply\" value=\"" + ObjID + "\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></a></div></div></div></div>")   
+        #formatted_posts = formatted_posts + Markup("<div class=\"row\"><div class=\"col-sm-8\"><div class=\"posts\"><div class=\"u-icons-div\"><img class=\"u-icons\" src=\"/static/u-icon_placeholder.png\"></div><div class=\"u_name\"><p>" + post["username"] + "</p></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><form action=\"/delete\" method=\"POST\"><button type=\"submit\" name=\"delete\" value=\"" + ObjID + "\">Delete</button></form><div class=\"u-post\"><p>" + post["post_content"] + "</p><a class=\"reply\" href=\"/thread\" name=\"reply\" value=\"" + ObjID + "\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></a></div></div></div></div>")   
+        formatted_posts = formatted_posts + Markup("<div class=\"media-border p-3\"><div class=\"posts\"><div class=\"u-icons-div\"><img class=\"u-icons\" src=\"/static/u-icon_placeholder.png\"></div><div class=\"media-body\"><div class=\"u_name\"><p>" + post["username"] + "</p></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><form action=\"/delete\" method=\"POST\"><button type=\"submit\" name=\"&#10005\" value=\"" + ObjID + "\">&#10005</button></form><div class=\"u-post\"><p>" + post["post_content"] + "</p><a class=\"reply\" href=\"/thread\" name=\"reply\" value=\"" + ObjID + "\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></a></div></div></div></div>")
     return formatted_posts
 
 def get_replies():
@@ -73,7 +75,7 @@ def add_posts():
                #'post_time': datetime.datetime.utcnow(),
                'post_content': request.form['post']}
 
-    replies.insert_one(u_post)
+    messages.insert_one(u_post)
     
 def add_replies():
     u_replies = {'username': session['user_data']['login'],
@@ -92,7 +94,6 @@ def inject_logged_in():
 def home():
     if "title" in request.form:
         add_posts()
-
     # if admin() == True and request.method == 'POST':
     #     collection.delete_one({"_id": "ObjectId"})
     
@@ -159,21 +160,27 @@ def thread():
 @app.route('/delete', methods=['GET', 'POST'])
 def delete_button():
     if request.method == 'POST':
-        
         S_Delete = Markup('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Success!</strong> Your post has been successfully deleted. </div>')
-        F_Delete = Markup('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Fail!</strong> Unable to delete posts. Cannot delete other users\' posts. </div>')
+        F_Delete = Markup('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Fail!</strong> Unable to delete post. Cannot delete other users\' posts. </div>')
+        F_Delete2 = Markup('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Fail!</strong> Unable to delete post. Please login to delete a post. </div>')
         posts = messages.find({})
         postID = ObjectId(request.form['delete'])
-        for post in posts: #scans through all documents in the database
+        
+                
+        for post in posts: #scans through all documents in the database   
+            if 'user_data' not in session:
+                flash(F_Delete2)
+                return render_template('home.html', user_posts = get_posts())
+            
             if post['username'] == session['user_data']['login']:
                 if post['_id'] == postID:
                     messages.delete_one(({'_id': postID}))
-                    flash(S_Delete)
-                    return render_template('home.html', user_posts = get_posts())
+                    flash(S_Delete)   
             else:
                 flash(F_Delete)
-                return render_template('home.html', user_posts = get_posts())
-                
+                  
+        return render_template('home.html', user_posts = get_posts())      
+     
     elif request.method == 'GET':
         return redirect(url_for('/home.html'))
 

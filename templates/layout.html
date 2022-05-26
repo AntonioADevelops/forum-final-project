@@ -24,17 +24,11 @@
     <script>
       $(document).ready(function(){
         {% if not logged_in %}
-        $(".reply-field").css("visibility", "hidden")
         $('#cpost').click(function(){
           alert('Before you can make a post, please log in.')
         });
         $('.reply').click(function(){
           alert('Before you can reply to a post, please log in.')
-        });
-        {% endif %}
-        {% if logged_in %}
-        $('.reply').click(function(){
-          $(".reply-field").css("visibility", "visible")
         });
         {% endif %}
       });
