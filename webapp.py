@@ -58,8 +58,18 @@ def get_posts():
     for post in posts:
         ObjID = str(post['_id'])
         #formatted_posts = formatted_posts + Markup("<div class=\"row\"><div class=\"col-sm-8\"><div class=\"posts\"><div class=\"u-icons-div\"><img class=\"u-icons\" src=\"/static/u-icon_placeholder.png\"></div><div class=\"u_name\"><p>" + post["username"] + "</p></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><form action=\"/delete\" method=\"POST\"><button type=\"submit\" name=\"delete\" value=\"" + ObjID + "\">Delete</button></form><div class=\"u-post\"><p>" + post["post_content"] + "</p><a class=\"reply\" href=\"/thread\" name=\"reply\" value=\"" + ObjID + "\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></a></div></div></div></div>")   
-        formatted_posts = formatted_posts + Markup("<div class=\"media-border p-3\"><div class=\"posts\"><div class=\"u-icons-div\"><img class=\"u-icons\" src=\"/static/u-icon_placeholder.png\"></div><div class=\"media-body\"><div class=\"u_name\"><p>" + post["username"] + "</p></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><form action=\"/delete\" method=\"POST\"><button type=\"submit\" name=\"&#10005\" value=\"" + ObjID + "\">&#10005</button></form><div class=\"u-post\"><p>" + post["post_content"] + "</p><a class=\"reply\" href=\"/thread\" name=\"reply\" value=\"" + ObjID + "\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></a></div></div></div></div>")
+        formatted_posts = formatted_posts + Markup("<div class=\"media-border p-3\"><div class=\"posts\"><div class=\"media-left\"><div class=\"u-icons-div\"><img class=\"media-object u-icons\" src=\"/static/u-icon_placeholder.png\"></div></div><div class=\"media-body\"><div class=\"delete_div\"><form action=\"/delete\" method=\"POST\"><button class=\"media-heading delete\"type=\"submit\" name=\"delete\" value=\"" + ObjID + "\">&#10005</button></form></div><div class=\"\"><p class=\"p_username\">" + post["username"] + "</p></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><div class=\"u-post\"><p>" + post["post_content"] + "</p><form action=\"/thread\" method=\"post\"><button class=\"reply\" name=\"reply\" value=\"" + ObjID + "\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></button></form></div></div></div></div>")
     return formatted_posts
+
+def get_post_thread():
+    posts = messages.find({})
+    post_thread=""
+    postID = ObjectId(request.form['reply'])
+    for post in posts:
+        if post['_id'] == postID:
+            ObjID = str(post['_id'])
+            post_thread = post_thread + Markup("<div class=\"media-border p-3\"><div class=\"tposts\"><div class=\"tu-icons-div\"><img class=\"tu-icons\" src=\"/static/u-icon_placeholder.png\"></div><div class=\"media-body\"><div class=\"delete_div\"><form action=\"/delete\" method=\"POST\"><button class=\"delete\" type=\"submit\" name=\"delete\" \"value=\"" + ObjID + ">&#10005</button></form></div><div class=\"tu_name\"><p class=\"tp_username\">" + post["username"] + "</p></div><div class=\"tu-title\"><p>" + post["post_title"] + "</p></div><div class=\"tu-post\"><p>" + post["post_content"] + "</p><form action=\"/thread\"><button class=\"treply\" name=\"reply\" value=\"" + ObjID + "\"><img class=\"treply-icon\" src=\"/static/reply.svg\"><p class=\"treply-text\">reply</p></button></form></div></div></div></div>")
+        return post_thread
 
 def get_replies():
     replies = replies.find({})
@@ -104,7 +114,7 @@ def posts():
     if ('github_token' in session):
         return render_template('posts.html')
     else:
-        return redirect("/")
+        return redirect(u"/")
 
 #redirect to GitHub's OAuth page and confirm callback URL
 @app.route('/login')
@@ -147,42 +157,38 @@ def get_github_oauth_token():
 
 @app.route('/thread', methods=['GET', 'POST'])
 def thread():
-    posts = messages.find({})
-    postID = ObjectId(request.form['reply'])
-    threaded_post = ""
-    for post in posts:
-        if post['_id'] == postID:
-            ObjID = str(post['_id'])
-            threaded_post = threaded_post + Markup("<div class=\"row\"><div class=\"col-sm-8\"><div class=\"tposts\"><div class=\"tu-icons-div\"><img class=\"tu-icons\" src=\"/static/u-icon_placeholder.png\"></div><div class=\"tu_name\"><p>" + post["username"] + "</p></div><div class=\"tu-title\"><p>" + post["post_title"] + "</p></div><form action=\"/delete\" method=\"POST\"><button type=\"submit\" name=\"delete\" \"value=\"" + ObjID + ">Delete</button></form><div class=\"tu-post\"><p>" + post["post_content"] + "</p><a class=\"treply\" href=\"/thread\" name=\"reply\" value=\"" + ObjID + "\"><img class=\"treply-icon\" src=\"/static/reply.svg\"><p class=\"treply-text\">reply</p></a></div></div></div></div>")         
-            return render_template('thread.html', post_thread = thread)
+    return render_template('thread.html', post_thread = get_post_thread())
+    
 
 
 @app.route('/delete', methods=['GET', 'POST'])
 def delete_button():
     if request.method == 'POST':
-        S_Delete = Markup('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Success!</strong> Your post has been successfully deleted. </div>')
+        S_Delete = Markup('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Success!</strong> The post has been successfully deleted. </div>')
         F_Delete = Markup('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Fail!</strong> Unable to delete post. Cannot delete other users\' posts. </div>')
         F_Delete2 = Markup('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Fail!</strong> Unable to delete post. Please login to delete a post. </div>')
         posts = messages.find({})
         postID = ObjectId(request.form['delete'])
-        
-                
+              
         for post in posts: #scans through all documents in the database   
             if 'user_data' not in session:
                 flash(F_Delete2)
                 return render_template('home.html', user_posts = get_posts())
             
-            if post['username'] == session['user_data']['login']:
+            elif post['username'] == session['user_data']['login'] or admin() == True:
                 if post['_id'] == postID:
                     messages.delete_one(({'_id': postID}))
-                    flash(S_Delete)   
-            else:
+                    flash(S_Delete)
+                    return render_template('home.html', user_posts = get_posts())
+                
+            elif post['username'] != session['user_data']['login'] or admin() == False:
                 flash(F_Delete)
-                  
-        return render_template('home.html', user_posts = get_posts())      
-     
+                return render_template('home.html', user_posts = get_posts())   
+              
+        return render_template('home.html', user_posts = get_posts())
+    
     elif request.method == 'GET':
-        return redirect(url_for('/home.html'))
+        return redirect(url_for('/'))
 
 
 
