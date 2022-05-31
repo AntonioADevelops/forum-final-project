@@ -2,10 +2,9 @@
 /* #content {
 } */
 
-
-
 /* Style Form */
 #form > input {
+     text-align: center;
      border: 2px solid #ccc;
      border-radius: 4px;
      background-color: #f8f8f8;
@@ -17,7 +16,6 @@
 }
 
 #post-title {
-     align-items: center;
      width: 50%;
      height: 40px;
 }
@@ -118,30 +116,44 @@
      cursor: pointer;
      outline: inherit; 
 }
- 
-/* Style Threaded Posts */
-.tposts {
-     border: 2px solid black;
-     border-radius: 5px;
+
+.u-username {
+     /* remove button styling */
+     background: none;
+     color: inherit;
+     border: none;
+     padding: 0;
+     font: inherit;
+     cursor: pointer;
+     outline: inherit; 
 }
 
-.tu-icons {
-     border-radius: 50%;
-     border: 1px solid rgb(88, 88, 88);
-     min-width: 40px;
-     max-width: 3vw;
-     height: auto;
+.u-username:hover {
+     text-decoration: underline;
 }
 
-/* .tu-name {
+.u-icon {
+     /* remove button styling */
+     background: none;
+     color: inherit;
+     border: none;
+     padding: 0;
+     font: inherit;
+     cursor: pointer;
+     outline: inherit; 
 }
-
-.tu-title {
-} */
 /* Style Reply Button */
 .reply {
      display: inline-block;
      color: rgb(78, 78, 78);
+     /* remove button styling */
+     background: none;
+     color: inherit;
+     border: none;
+     padding: 0;
+     font: inherit;
+     cursor: pointer;
+     outline: inherit; 
 }
 
 .reply:hover {
@@ -160,4 +172,26 @@
 .reply-text {
      display: inline-block;
 }
+
+/* Style Threaded Posts */
+/* .tposts {
+     border: 2px solid black;
+     border-radius: 5px;
+}
+
+.tu-icons {
+     border-radius: 50%;
+     border: 1px solid rgb(88, 88, 88);
+     min-width: 40px;
+     max-width: 3vw;
+     height: auto;
+}
+
+.tu-name {
+}
+
+.tu-title {
+} */
+
+
 

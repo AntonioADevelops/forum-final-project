@@ -1,4 +1,3 @@
-from ast import If
 from flask import Flask, redirect, url_for, session, request, flash, jsonify
 from flask_oauthlib.client import OAuth
 #from flask_oauthlib.contrib.apps import github #import to make requests to GitHub's OAuth
@@ -45,20 +44,26 @@ db_name = os.environ["MONGO_DBNAME"]
 client = pymongo.MongoClient(connection_string)
 db = client[db_name]
 messages = db['messages']
-replies = db['replies']
 
 #context processors run before templates are rendered and add variable(s) to the template's context
 #context processors must return a dictionary 
 #this context processor adds the variable logged_in to the conext for all templates
 
 #call this function whenever you need to display the posts on a page.
+
+def admin():
+    admin = False
+    if session['user_data']['login'] == "AntonioADevelops" or "sanchez-christian":
+        admin = True
+    return admin  
+
 def get_posts():
     posts = messages.find({})
     formatted_posts=""
     for post in posts:
         ObjID = str(post['_id'])
-        #formatted_posts = formatted_posts + Markup("<div class=\"row\"><div class=\"col-sm-8\"><div class=\"posts\"><div class=\"u-icons-div\"><img class=\"u-icons\" src=\"/static/u-icon_placeholder.png\"></div><div class=\"u_name\"><p>" + post["username"] + "</p></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><form action=\"/delete\" method=\"POST\"><button type=\"submit\" name=\"delete\" value=\"" + ObjID + "\">Delete</button></form><div class=\"u-post\"><p>" + post["post_content"] + "</p><a class=\"reply\" href=\"/thread\" name=\"reply\" value=\"" + ObjID + "\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></a></div></div></div></div>")   
-        formatted_posts = formatted_posts + Markup("<div class=\"media-border p-3\"><div class=\"posts\"></div><div class=\"card mb-2\"><div class=\"card-body p-2 p-sm-3\"><div class=\"media forum-item\"><a href=\"/thread\"><img src=\"/static/u-icon_placeholder.png\" class=\"mr-3 rounded-circle u-icon\" width=\"50\" alt=\"User\"></a><div class=\"media-body\"><div class=\"delete_div\"><form action=\"/delete\" method=\"post\"><button class=\"media-heading delete\" type=\"submit\" name=\"delete\" value=\"" + ObjID + "\">&#10005</button></form></div><div class=\"u-name\"><h6><a href=\"/thread\" class=\"text-body p_username\">" + post["username"] + "</a></h6></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><div class=\"u-post\"><p>" + post["post_content"] + "</p><a class=\"reply\" href=\"/thread\" name=\"reply\" value=\"" + ObjID + "\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></a></div></div></div></div></div></div></div>")
+        # formatted_posts = formatted_posts + Markup("<div class=\"media-border p-3\"><div class=\"posts\"></div><div class=\"card mb-2\"><div class=\"card-body p-2 p-sm-3\"><div class=\"media forum-item\"><form action=\"/thread\"><button class=\"u-icon\"><img src=\"/static/u-icon_placeholder.png\" class=\"mr-3 rounded-circle u-icon\" name=\"reply\" width=\"50\" alt=\"User\"></button></form><div class=\"media-body\"><div class=\"delete_div\"><form action=\"/delete\" method=\"post\"><button class=\"media-heading delete\" type=\"submit\" name=\"delete\" value=\"" + ObjID + "\">&#10005</button></form></div><div class=\"u-name\"><h6><form action=\"/thread\"><button class=\"text-body u-username\" name=\"reply\">" + post["username"] + "</button></form></h6></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><div class=\"u-post\"><p>" + post["post_content"] + "</p><form action=\"/thread\"><button class=\"reply\" type=\"submit\" name=\"reply\" value=\"" + ObjID + "\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></button></div></div></div></div></div></div></div>")
+        formatted_posts = formatted_posts + Markup("<div class=\"media-border p-3\"><div class=\"posts\"><div class=\"card mb-2\"><div class=\"card-body p-2 p-sm-3\"><div class=\"media forum-item\"><a href=\"/thread\"><img src=\"/static/u-icon_placeholder.png\" class=\"mr-3 rounded-circle u-icon\" width=\"50\" alt=\"User\"></a><div class=\"media-body\"><div class=\"delete_div\"><form action=\"/delete\" method=\"post\"><button class=\"media-heading delete\" type=\"submit\" name=\"delete\" value=\"" + ObjID + "\">&#10005</button></form></div><div class=\"u-name\"><h6><a href=\"/thread\" class=\"text-body p_username\">" + post["username"] + "</a></h6></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><div class=\"u-post\"><p>" + post["post_content"] + "</p><form action=\"/thread\" method=\"post\"><button class=\"reply\" href=\"/thread\" name=\"reply\" value=\"" + ObjID + "\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></button></div></div></div></div></div></div></div>")
     return formatted_posts
 
 def get_post_thread():
@@ -67,12 +72,13 @@ def get_post_thread():
     postID = ObjectId(request.form['reply'])
     for post in posts:
         if post['_id'] == postID:
-            ObjID = str(post['_id'])
-            post_thread = post_thread + Markup("<div class=\"media-border p-3\"><div class=\"tposts\"><div class=\"tu-icons-div\"><img class=\"tu-icons\" src=\"/static/u-icon_placeholder.png\"></div><div class=\"media-body\"><div class=\"delete_div\"><form action=\"/delete\" method=\"POST\"><button class=\"delete\" type=\"submit\" name=\"delete\" \"value=\"" + ObjID + ">&#10005</button></form></div><div class=\"tu_name\"><p class=\"tp_username\">" + post["username"] + "</p></div><div class=\"tu-title\"><p>" + post["post_title"] + "</p></div><div class=\"tu-post\"><p>" + post["post_content"] + "</p><form action=\"/thread\"><button class=\"treply\" name=\"reply\" value=\"" + ObjID + "\"><img class=\"treply-icon\" src=\"/static/reply.svg\"><p class=\"treply-text\">reply</p></button></form></div></div></div></div>")
+            ObjID = str(post['_id'])    
+            post_thread = post_thread + Markup("<div class=\"media-border p-3\"><div class=\"posts\"><div class=\"card mb-2\"><div class=\"card-body p-2 p-sm-3\"><div class=\"media forum-item\"><a href=\"/thread\"><img src=\"/static/u-icon_placeholder.png\" class=\"mr-3 rounded-circle u-icon\" width=\"50\" alt=\"User\"></a><div class=\"media-body\"><div class=\"delete_div\"><form action=\"/delete\" method=\"post\"><button class=\"media-heading delete\" type=\"submit\" name=\"delete\" value=\"" + ObjID + "\">&#10005</button></form></div><div class=\"u-name\"><h6><a href=\"/thread\" class=\"text-body p_username\">" + post["username"] + "</a></h6></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><div class=\"u-post\"><p>" + post["post_content"] + "</p><form action=\"/thread\" method=\"post\"><button class=\"reply\" href=\"/thread\" name=\"reply\" value=\"" + ObjID + "\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></button></div></div></div></div></div></div></div>")
         return post_thread
 
 def get_replies():
     replies = replies.find({})
+    tpostID = ObjectId(request.form['treply'])
     formatted_replies=""
     for reply in replies:
         ObjID = str(reply['id'])
@@ -83,18 +89,18 @@ def add_posts():
     u_post = {'username': session['user_data']['login'],
                'post_title': request.form['title'],
                #'post_time': datetime.datetime.utcnow(),
-               'post_content': request.form['post']}
+               'post_content': request.form['post'],
+               'replies': []}
 
     messages.insert_one(u_post)
     
 def add_replies():
-    u_replies = {'username': session['user_data']['login'],
-                 'reply': request.form['reply']}
-def admin():
-    admin = False
-    if session['user_data']['login'] == "AntonioADevelops" or "sanchez-christian":
-        admin = True
-    return admin  
+    messages.update_one(
+        {'replies': {[]}},
+        {"$set": {"reply name":, asd}
+    )
+    
+    
     
 @app.context_processor
 def inject_logged_in():
@@ -157,8 +163,12 @@ def get_github_oauth_token():
 
 @app.route('/thread', methods=['GET', 'POST'])
 def thread():
+    # if 'user_data' in session:
+    #     if request.method == 'POST':
+    #         add_replies()
+    #     return render_template('thread.html', post_thread = get_post_thread())
+    # elif 'user_data' not in session:
     return render_template('thread.html', post_thread = get_post_thread())
-    
 
 
 @app.route('/delete', methods=['GET', 'POST'])
