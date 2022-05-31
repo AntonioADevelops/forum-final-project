@@ -81,31 +81,8 @@
 }
 
 /* Style Posts */
-/* .posts {
-     border: 2px solid black;
-     border-radius: 5px;
-}
-
-.u-icons {
-     border-radius: 50%;
-     border: 1px solid rgb(88, 88, 88);
-     min-width: 40px;
-     max-width: 3vw;
-     height: auto;
-}
-
-.u-name {
-     float:right;
-}
-
-.u-title {
-     text-align: center;
-} */
 .card {
      box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06);
- }
- 
- .card {
      position: relative;
      display: flex;
      flex-direction: column;
@@ -113,15 +90,35 @@
      word-wrap: break-word;
      background-color: #fff;
      background-clip: border-box;
-     border: 0 solid rgba(0,0,0,.125);
+     border: 2px solid rgba(0,0,0,.125);
      border-radius: .25rem;
- }
+}
  
- .card-body {
+.card-body {
      flex: 1 1 auto;
      min-height: 1px;
      padding: 1rem;
- }
+}
+
+.media-body {
+     overflow: hidden;
+}
+
+.delete {
+     color: rgb(255, 0, 0);
+     position: absolute;
+     right: 25px;
+     display:inline-block;
+     /* remove button styling */
+     background: none;
+     color: inherit;
+     border: none;
+     padding: 0;
+     font: inherit;
+     cursor: pointer;
+     outline: inherit; 
+}
+ 
 /* Style Threaded Posts */
 .tposts {
      border: 2px solid black;
@@ -164,13 +161,3 @@
      display: inline-block;
 }
 
-.p_username {
-     color: rgb(0, 100, 250);
-}
-
-.delete {
-     color: rgb(255, 0, 0);
-     position: absolute;
-     right: 25px;
-     display:inline-block;
-   }

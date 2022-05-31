@@ -1,16 +1,33 @@
-<div class="card mb-2">
-  <div class="card-body p-2 p-sm-3">
-      <div class="media forum-item">
-          <a href="/thread"><img src="https://bootdey.com/img/Content/avatar/avatar4.png" class="mr-3 rounded-circle" width="50" alt="User" /></a>
-          <div class="media-body">
-              <h6><a href="/thread" class="text-body">Top rated filter not working</a></h6>
-              <p class="text-secondary">
-                  lorem ipsum dolor sit amet lorem ipsum dolor sit amet lorem ipsum dolor sit amet
-              </p>
-          </div>
-      </div>
+<div class=\"posts\"></div>
+  <div class=\"card mb-2\">
+    <div class=\"card-body p-2 p-sm-3\">
+        <div class=\"media forum-item\"><a href=\"/thread\"><img src=\"/static/u-icon_placeholder.png\" class=\"mr-3 rounded-circle u-icon\" width=\"50\" alt=\"User\"></a>
+            <div class=\"media-body\">
+              <div class=\"delete_div\">
+                <form action=\"/delete\" method=\"post\">
+                  <button class=\"media-heading delete\" type=\"submit\" name=\"delete\" value=\"" + ObjID + "\">&#10005</button>
+                </form>
+              </div>
+              <div class=\"u-name\">
+                <h6><a href=\"/thread\" class=\"text-body p_username\">" + post["username"] + "</a></h6>
+              </div>
+              <div class=\"u-title\">
+                <p>" + post["post_title"] + "</p>
+              </div>
+              <div class=\"u-post\">
+                <p>" + post["post_content"] + "</p>
+                <a class=\"reply\" href=\"/thread\" name=\"reply\" value=\"\" + ObjID + "\">
+                  <img class=\"reply-icon\" src=\"/static/reply.svg\">
+                  <p class=\"reply-text\">reply</p>
+                </a>
+              </div>
+            </div>
+        </div>
+    </div>
   </div>
 </div>
+
+<div class=\"posts\"></div><div class=\"card mb-2\"><div class=\"card-body p-2 p-sm-3\"><div class=\"media forum-item\"><a href=\"/thread\"><img src=\"/static/u-icon_placeholder.png\" class=\"mr-3 rounded-circle u-icon\" width=\"50\" alt=\"User\"></a><div class=\"media-body\"><div class=\"delete_div\"><form action=\"/delete\" method=\"post\"><button class=\"media-heading delete\" type=\"submit\" name=\"delete\" value=\"" + ObjID + "\">&#10005</button></form></div><div class=\"u-name\"><h6><a href=\"/thread\" class=\"text-body p_username\">" + post["username"] + "</a></h6></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><div class=\"u-post\"><p>" + post["post_content"] + "</p><a class=\"reply\" href=\"/thread\" name=\"reply\" value=\"\" + ObjID + "\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></a></div></div></div></div></div></div>
 
 <div class=\"media-border p-3\">
   <div class=\"posts\">
@@ -25,7 +42,7 @@
           <button class=\"media-heading delete\"type=\"submit\" name=\"delete\" value=\"" + ObjID + "\">&#10005</button>
         </form>
       </div>
-      <div class=\"\">
+      <div class=\"u-name\">
         <p class=\"p_username\">" + post["username"] + "</p>
       </div>
       <div class=\"u-title\">
