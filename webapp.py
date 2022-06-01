@@ -98,7 +98,7 @@ def add_posts():
     u_post = {'username': session['user_data']['login'],
                'post_title': request.form['title'],
                #'post_time': datetime.datetime.utcnow(),
-               'post_content': request.form['u-reply'],
+               'post_content': request.form['post'],
                'replies': {
                    "reply_name": [],
                    "reply_content": []
@@ -107,10 +107,20 @@ def add_posts():
 
     messages.insert_one(u_post)
     
-def add_replies():
+   
+        
+def add_replies():     
+    posts = messages.find({})
+    postID = ObjectId(request.form['treply'])
+    for post in posts:
+        if post['_id'] == postID:
+            reply_name = messages.find({},{"replies.reply_name"})
+            reply_content = messages.find({},{"replies.reply_content"})   
+        return(reply_name, reply_content)
+    
     messages.update_one(
         {'replies': []},
-        {"$set": {"reply_name": session['user_data']['login'], "reply_content": request.form['treply']}}
+        {"$set": {"reply_name": [reply_name, session['user_data']['login']], "reply_content": [reply_content, request.form['treply']]}}
     )
     
 @app.context_processor
