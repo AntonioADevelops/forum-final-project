@@ -63,7 +63,7 @@ def get_posts():
     for post in posts:
         ObjID = str(post['_id'])
         # formatted_posts = formatted_posts + Markup("<div class=\"media-border p-3\"><div class=\"posts\"></div><div class=\"card mb-2\"><div class=\"card-body p-2 p-sm-3\"><div class=\"media forum-item\"><form action=\"/thread\"><button class=\"u-icon\"><img src=\"/static/u-icon_placeholder.png\" class=\"mr-3 rounded-circle u-icon\" name=\"reply\" width=\"50\" alt=\"User\"></button></form><div class=\"media-body\"><div class=\"delete_div\"><form action=\"/delete\" method=\"post\"><button class=\"media-heading delete\" type=\"submit\" name=\"delete\" value=\"" + ObjID + "\">&#10005</button></form></div><div class=\"u-name\"><h6><form action=\"/thread\"><button class=\"text-body u-username\" name=\"reply\">" + post["username"] + "</button></form></h6></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><div class=\"u-post\"><p>" + post["post_content"] + "</p><form action=\"/thread\"><button class=\"reply\" type=\"submit\" name=\"reply\" value=\"" + ObjID + "\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></button></div></div></div></div></div></div></div>")
-        formatted_posts = formatted_posts + Markup("<div class=\"media-border p-3\"><div class=\"posts\"><div class=\"card mb-2\"><div class=\"card-body p-2 p-sm-3\"><div class=\"media forum-item\"><a href=\"/thread\"><img src=\"/static/u-icon_placeholder.png\" class=\"mr-3 rounded-circle u-icon\" width=\"50\" alt=\"User\"></a><div class=\"media-body\"><div class=\"delete_div\"><form action=\"/delete\" method=\"post\"><button class=\"media-heading delete\" type=\"submit\" name=\"delete\" value=\"" + ObjID + "\">&#10005</button></form></div><div class=\"u-name\"><h6><a href=\"/thread\" class=\"text-body p_username\">" + post["username"] + "</a></h6></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><div class=\"u-post\"><p>" + post["post_content"] + "</p><form action=\"/thread\" method=\"post\"><button class=\"reply\" href=\"/thread\" name=\"reply\" value=\"" + ObjID + "\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></button></div></div></div></div></div></div></div>")
+        formatted_posts = formatted_posts + Markup("<div class=\"media-border p-3\"><div class=\"posts\"><div class=\"card mb-2\"><div class=\"card-body p-2 p-sm-3\"><div class=\"media forum-item\"><form action=\"/thread\" method=\"post\"><button class=\"u-icon\" name=\"reply\" value=\"" + ObjID + "\"><img src=\"/static/u-icon_placeholder.png\" class=\"mr-3 rounded-circle\" width=\"50\" alt=\"User\"></button></form><div class=\"media-body\"><div class=\"delete_div\"><form action=\"/delete\" method=\"post\"><button class=\"media-heading delete\" type=\"submit\" name=\"delete\" value=\"" + ObjID + "\">&#10005</button></form></div><div class=\"u-name\"><h6><form action=\"/thread\" method=\"post\"><button class=\"text-body u-username\" name=\"reply\" value=\"" + ObjID + "\">" + post["username"] + "</button></form></h6></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><div class=\"u-post\"><p>" + post["post_content"] + "</p><form action=\"/thread\" method=\"post\"><button class=\"reply\" name=\"reply\" value=\"" + ObjID + "\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></button></form></div></div></div></div></div></div></div>")
     return formatted_posts
 
 def get_post_thread():
@@ -73,15 +73,24 @@ def get_post_thread():
     for post in posts:
         if post['_id'] == postID:
             ObjID = str(post['_id'])    
-            post_thread = post_thread + Markup("<div class=\"media-border p-3\"><div class=\"posts\"><div class=\"card mb-2\"><div class=\"card-body p-2 p-sm-3\"><div class=\"media forum-item\"><a href=\"/thread\"><img src=\"/static/u-icon_placeholder.png\" class=\"mr-3 rounded-circle u-icon\" width=\"50\" alt=\"User\"></a><div class=\"media-body\"><div class=\"delete_div\"><form action=\"/delete\" method=\"post\"><button class=\"media-heading delete\" type=\"submit\" name=\"delete\" value=\"" + ObjID + "\">&#10005</button></form></div><div class=\"u-name\"><h6><a href=\"/thread\" class=\"text-body p_username\">" + post["username"] + "</a></h6></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><div class=\"u-post\"><p>" + post["post_content"] + "</p><form action=\"/thread\" method=\"post\"><button class=\"reply\" href=\"/thread\" name=\"reply\" value=\"" + ObjID + "\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></button></div></div></div></div></div></div></div>")
+            post_thread = post_thread + Markup("<div class=\"media-border p-3\"><div class=\"posts\"><div class=\"card mb-2\"><div class=\"card-body p-2 p-sm-3\"><div class=\"media forum-item\"><img src=\"/static/u-icon_placeholder.png\" class=\"mr-3 rounded-circle u-icon\" width=\"50\" alt=\"User\"><div class=\"media-body\"><div class=\"delete_div\"><form action=\"/delete\" method=\"post\"><button class=\"media-heading delete\" type=\"submit\" name=\"delete\" value=\"" + ObjID + "\">&#10005</button></form></div><div class=\"u-name\"><h6><p class=\"text-body u-username\">" + post["username"] + "</p></h6></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><div class=\"u-post\"><p>" + post["post_content"] + "</p><form action=\"/thread\" method=\"post\" class=\"reply-field-form\"><input class=\"reply-field\" onfocus=\"this.value=''\" type=\"text\" value=\"Post a reply...\" name=\"u-reply\"><button type=\"submit\" class=\"reply\" name=\"treply\" value=\"" + ObjID + "\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></button></form></div></div></div></div></div></div></div>")
+        return post_thread
+    
+def get_post_thread2():
+    posts = messages.find({})
+    post_thread=""
+    postID = ObjectId(request.form['treply'])
+    for post in posts:
+        if post['_id'] == postID:
+            ObjID = str(post['_id'])    
+            post_thread = post_thread + Markup("<div class=\"media-border p-3\"><div class=\"posts\"><div class=\"card mb-2\"><div class=\"card-body p-2 p-sm-3\"><div class=\"media forum-item\"><img src=\"/static/u-icon_placeholder.png\" class=\"mr-3 rounded-circle u-icon\" width=\"50\" alt=\"User\"><div class=\"media-body\"><div class=\"delete_div\"><form action=\"/delete\" method=\"post\"><button class=\"media-heading delete\" type=\"submit\" name=\"delete\" value=\"" + ObjID + "\">&#10005</button></form></div><div class=\"u-name\"><h6><p class=\"text-body u-username\">" + post["username"] + "</p></h6></div><div class=\"u-title\"><p>" + post["post_title"] + "</p></div><div class=\"u-post\"><p>" + post["post_content"] + "</p><form action=\"/thread\" method=\"post\" class=\"reply-field-form\"><input class=\"reply-field\" onfocus=\"this.value=''\" type=\"text\" value=\"Post a reply...\" name=\"u-reply\"><button type=\"submit\" class=\"reply\" name=\"treply\" value=\"" + ObjID + "\"><img class=\"reply-icon\" src=\"/static/reply.svg\"><p class=\"reply-text\">reply</p></button></form></div></div></div></div></div></div></div>")
         return post_thread
 
 def get_replies():
-    replies = replies.find({})
+    posts = messages.find({})
     tpostID = ObjectId(request.form['treply'])
     formatted_replies=""
-    for reply in replies:
-        ObjID = str(reply['id'])
+    for reply in posts:
         formatted_replies = formatted_replies + Markup("<div>")
     return formatted_replies
 
@@ -89,18 +98,20 @@ def add_posts():
     u_post = {'username': session['user_data']['login'],
                'post_title': request.form['title'],
                #'post_time': datetime.datetime.utcnow(),
-               'post_content': request.form['post'],
-               'replies': []}
+               'post_content': request.form['u-reply'],
+               'replies': {
+                   "reply_name": [],
+                   "reply_content": []
+               }
+               }
 
     messages.insert_one(u_post)
     
 def add_replies():
     messages.update_one(
-        {'replies': {[]}},
-        {"$set": {"reply name":, asd}
+        {'replies': []},
+        {"$set": {"reply_name": session['user_data']['login'], "reply_content": request.form['treply']}}
     )
-    
-    
     
 @app.context_processor
 def inject_logged_in():
@@ -110,8 +121,6 @@ def inject_logged_in():
 def home():
     if "title" in request.form:
         add_posts()
-    # if admin() == True and request.method == 'POST':
-    #     collection.delete_one({"_id": "ObjectId"})
     
     return render_template('home.html', user_posts = get_posts())
     
@@ -120,7 +129,7 @@ def posts():
     if ('github_token' in session):
         return render_template('posts.html')
     else:
-        return redirect(u"/")
+        return redirect(url_for('/'))
 
 #redirect to GitHub's OAuth page and confirm callback URL
 @app.route('/login')
@@ -163,12 +172,23 @@ def get_github_oauth_token():
 
 @app.route('/thread', methods=['GET', 'POST'])
 def thread():
-    # if 'user_data' in session:
-    #     if request.method == 'POST':
-    #         add_replies()
-    #     return render_template('thread.html', post_thread = get_post_thread())
-    # elif 'user_data' not in session:
-    return render_template('thread.html', post_thread = get_post_thread())
+    F_Reply = Markup('<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Fail!</strong> Unable to post reply. Please log in before trying to reply. </div>')
+    S_Reply = Markup('<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Success!</strong> Your reply has been successfully posted. </div>')      
+    if request.method == 'POST':
+        if 'user_data' not in session and 'treply' in request.form:
+            flash(F_Reply)
+            return render_template('thread.html', post_thread = get_post_thread2())
+        
+        elif 'treply' in request.form:
+            flash(S_Reply)
+            add_replies()
+            return render_template('thread.html', post_thread = get_post_thread2())
+        # elif 'user_data' in session:
+        #     add_replies()
+        return render_template('thread.html', post_thread = get_post_thread())
+            
+    if request.method == "GET":
+        return redirect(url_for('/'))
 
 
 @app.route('/delete', methods=['GET', 'POST'])

@@ -3,22 +3,33 @@
 } */
 
 /* Style Form */
-#form > input {
+#form {
+     margin-top: 40px;
      text-align: center;
-     border: 2px solid #ccc;
-     border-radius: 4px;
-     background-color: #f8f8f8;
-}
-
-#post-content {
-     width: 50%;
-     height: 125px;
 }
 
 #post-title {
-     width: 50%;
+     border: 2px solid #ccc;
+     border-radius: 4px;
+     background-color: #f8f8f8;
+     width: 60%;
      height: 40px;
 }
+
+#post-content {
+     border: 2px solid #ccc;
+     border-radius: 4px;
+     background-color: #f8f8f8;
+     text-align: left;
+     padding-left:0;
+     padding-top:0;
+     padding-bottom:0.4em;
+     padding-right: 0.4em;
+     width: 60%;
+     height: 250px;
+}
+
+
 
 #submitbut {
      margin-top: 5px
@@ -144,6 +155,7 @@
 }
 /* Style Reply Button */
 .reply {
+     transform: translateY(-4px);
      display: inline-block;
      color: rgb(78, 78, 78);
      /* remove button styling */
@@ -173,25 +185,12 @@
      display: inline-block;
 }
 
-/* Style Threaded Posts */
-/* .tposts {
-     border: 2px solid black;
-     border-radius: 5px;
+/* .reply-field-form {
+     display: inline-block;
 }
 
-.tu-icons {
-     border-radius: 50%;
-     border: 1px solid rgb(88, 88, 88);
-     min-width: 40px;
-     max-width: 3vw;
-     height: auto;
-}
-
-.tu-name {
-}
-
-.tu-title {
+.reply-field {
+     width: fit-content;
 } */
-
 
 
