@@ -53,7 +53,7 @@ messages = db['messages']
 
 def admin():
     admin = False
-    if session['user_data']['login'] == "AntonioADevelops" or "sanchez-christian":
+    if session['user_data']['login'] == "AntonioADevelops" or session['user_data']['login'] == "sanchez-christian":
         admin = True
     return admin  
 
@@ -206,7 +206,7 @@ def delete_button():
                     flash(S_Delete)
                     return render_template('home.html', user_posts = get_posts())
                 
-            elif post['username'] != session['user_data']['login'] or admin() == False:
+            elif post['username'] != session['user_data']['login']:
                 flash(F_Delete)
                 return render_template('home.html', user_posts = get_posts())   
               
